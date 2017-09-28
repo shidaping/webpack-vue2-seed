@@ -8,6 +8,7 @@ var commonConfig = {
   staticFilePort: 5100,
   staticFilePrefix: 'projectName',
   env: env,
+  notUseDevServer: !!process.env.NOT_USE_DEV_SERVER,
 };
 if (env === 'development' || env === 'testing') {
   commonConfig = _.extend(commonConfig, {

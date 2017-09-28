@@ -8,16 +8,26 @@ var env = config.env;
 var fs = require('fs');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
+
+
+var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+var publicPath = `http://${config.staticFileHost}:${config.staticFilePort}/${config.staticFilePrefix}/`;
+if (config.notUseDevServer) {
+  publicPath = '/static/';
+}
+
 var webackConfig = {
   entry: {
     //all: ['./client/modules/all/index.js'],
-    todo: './client/modules/todo/index.js',
-    staticList: './client/modules/todo/pages/list/static.js',
+    todo: ['./client/modules/todo/index.js'],
+    staticList: ['./client/modules/todo/pages/list/static.js'],
     // 'todo-list': ['./client/modules/todo/index.js'],
-    vendor: [],
+    // vendor: '',
   },
+  devtool: "sourcemap",
   output: {
-    publicPath: `http://${config.staticFileHost}:${config.staticFilePort}/${config.staticFilePrefix}/`,
+    publicPath: publicPath,
     path: path.resolve(__dirname, "dist"),
     filename: env === 'development' ? '[name].js' : '[name]-[chunkhash].js',
     // chunkFilename: "[id].js"
@@ -76,14 +86,14 @@ var webackConfig = {
       test: /\.ts$/,
       loaders: ['babel-loader'],
       exclude: /(node_modules)/,
-  
     }, {
       test: /(\.less|\.css)$/,
-      use: ['css-loader', 'less-loader', 'postcss-loader'],
-      // use: env === 'development' ? ['css-loader', 'less-loader', 'postcss-loader'] :
-      //   ExtractTextPlugin.extract({
-      //     use: ['css-loader', 'less-loader', 'postcss-loader'],
-      //   })
+      // use: ['style-loader', 'css-loader', 'less-loader', 'postcss-loader'],
+      use: env === 'development' ? ['style-loader', 'css-loader', 'less-loader', 'postcss-loader'] :
+        ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'less-loader', 'postcss-loader'],
+        }),
 
     // }, {
     //   test: /\.css$/,
@@ -146,4 +156,17 @@ webackConfig.plugins.push(
     }
   })
 );
+if (config.notUseDevServer) {
+  var hotClient = 'webpack-hot-middleware/client';
+  for (var key in webackConfig.entry) {
+    // 为entry增加热加载
+    console.log(webackConfig.entry[key])
+    webackConfig.entry[key].push(hotClient);
+  }
+  webackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+  webackConfig.plugins.push(
+    // webpack-isomorphic-tools with development
+    webpackIsomorphicToolsPlugin.development()
+  );
+}
 module.exports = webackConfig;

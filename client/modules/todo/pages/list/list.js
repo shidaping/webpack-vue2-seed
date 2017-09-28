@@ -15,7 +15,7 @@ const List = {
   },
   data: () => {
     return {
-      name: '',
+      name: 'aa',
       msg: 'hello, world',
     };
   },

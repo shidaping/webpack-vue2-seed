@@ -15,7 +15,7 @@ global.DEBUG = process.env.DEBUG === 'true';
 // }
 
 
-global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('./webpack-isomorphic-tools'))
+global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('./webpack-isomorphic-tools.config'))
   .server(__dirname, function() {
     require('./server/app.js');
   });

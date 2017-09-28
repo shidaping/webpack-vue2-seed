@@ -1,1 +1,16 @@
-{"todo":{"js":"http://192.168.0.105:5100/projectName/todo.js"},"staticList":{"js":"http://192.168.0.105:5100/projectName/staticList.js"},"vendor":{"js":"http://192.168.0.105:5100/projectName/vendor.js"}}
+{
+  "javascript": {
+    "todo": "/static/todo.js",
+    "staticList": "/static/staticList.js",
+    "vendor": "/static/vendor.js"
+  },
+  "styles": {},
+  "assets": {
+    "./client/modules/todo/pages/list/list.less": {
+      "_style": "body {\n  color: green;\n}\ninput {\n  color: red;\n}\n"
+    }
+  },
+  "webpack": {
+    "version": "3.6.0"
+  }
+}
